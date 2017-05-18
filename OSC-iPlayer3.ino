@@ -23,18 +23,26 @@ EthernetUDP Udp;
 
 //int incomingByte = 0;   // for incoming serial data
 
-elapsedMillis mils;
-int secs = 0;
-int mins = 0;
-int dim = 0;
-int dimDelay = 1;
-int autoDim = 1;
+elapsedMillis mils; //millis count up to 999 then increment secs
+int secs = 0; // secs count up to 59 then increment mins
+int mins = 0; // resulting in mins since power on
+int dim = 0; //dimming value is incremented once each min
+int dimDelay = 1; // delay before starting to increment dim
+int autoDim = 1; // dim is subtracted from brightness when autoDim = 1)
 
-int Brightness = 100;
-int Trigger = 0;
+int Brightness = 100; // Brightness value sent to iPlayer3, controlled by autoDim and OSC fader
+int Trigger = 0; // show 
 
 void setup()
 {  
+  pinMode(9, OUTPUT);
+  digitalWrite(9, LOW);    // begin reset the WIZ820io
+  pinMode(10, OUTPUT);
+  digitalWrite(10, HIGH);  // de-select WIZ820io
+  pinMode(4, OUTPUT);
+  digitalWrite(4, HIGH);   // de-select the SD Card
+  digitalWrite(9, HIGH);   // end reset pulse
+  
   Serial.begin(9600); //9600 for a "normal" Arduino board (Uno for example). 115200 for a Teensy ++2 
   Serial.println("OSC test");
 
@@ -88,7 +96,7 @@ void loop()
       Serial.println(autoDim); 
        
       if (mins >= dimDelay){
-        dim = constrain(mins-dimDelay+1, 0, 40);
+        dim = constrain(mins-dimDelay+1, 0, 40);  // Dim down to 60% brightness then stop (Title 12)
         if(autoDim == 1){
           Brightness = 100-dim;
           //delay (10);

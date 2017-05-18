@@ -14,7 +14,7 @@ void OSCMsgReceive(){
 }
 
 void funcBright(OSCMessage &msg, int addrOffset ){
-  autoDim = 0;
+  autoDim = 0; // disable dimming when manual slider is used
   Serial.println();
   Serial.print("Set Auto: ");
   Serial.println(autoDim);
@@ -27,37 +27,16 @@ void funcBright(OSCMessage &msg, int addrOffset ){
   stringOne = "X02";
   stringTwo = decToHex(map(Brightness, 0, 100, 0, 255), 2);
   stringTwo.toUpperCase();
-  iPlayerCommand = stringOne += stringTwo;
+  iPlayerCommand = stringOne += stringTwo; // Sends brightness command to iPlayer3 in the format X02dd
   Serial1.print(iPlayerCommand);
   Serial.print("Sent: ");
   Serial.println(iPlayerCommand);
 
   updateOSC();
-//  OSCMessage msgOUT("/Brightness");
-//  msgOUT.add(Brightness);
-//  Udp.beginPacket(Udp.remoteIP(), destPort);
-//  msgOUT.send(Udp); // send the bytes
-//  Udp.endPacket(); // mark the end of the OSC Packet
-//  msgOUT.empty(); // free space occupied by message
-//  
-//  OSCMessage msgOUT2("/Brightness/Value");
-//  msgOUT2.add(Brightness);
-//  Udp.beginPacket(Udp.remoteIP(), destPort);
-//  msgOUT2.send(Udp); // send the bytes
-//  Udp.endPacket(); // mark the end of the OSC Packet
-//  msgOUT2.empty(); // free space occupied by message
-//
-//  OSCMessage msgOUT3("/Auto");
-//  msgOUT3.add(autoDim);
-//  Udp.beginPacket(Udp.remoteIP(), destPort);
-//  msgOUT3.send(Udp); // send the bytes
-//  Udp.endPacket(); // mark the end of the OSC Packet
-//  msgOUT3.empty(); // free space occupied by message
-
 }
 
 void funcTrigger(OSCMessage &msg, int addrOffset ){
-  Trigger = msg.getFloat(0);
+  Trigger = msg.getFloat(0); 
   Serial.println();
   Serial.print("Trigger: ");
   Serial.println(Trigger);
@@ -67,12 +46,12 @@ void funcTrigger(OSCMessage &msg, int addrOffset ){
   stringTwo = decToHex(Trigger, 2);
   stringTwo.toUpperCase();
 
-  iPlayerCommand = stringOne += stringTwo;
+  iPlayerCommand = stringOne += stringTwo; // Sends trigger command to iPlayer3 in the format X04dd
   Serial1.print(iPlayerCommand);
   Serial.print("Sent: ");
   Serial.println(iPlayerCommand);
   
-  OSCMessage msgOUT("/Trigger/Value");
+  OSCMessage msgOUT("/Trigger/Value"); // update TouchOSC trigger indicator
   msgOUT.add(Trigger);
   Udp.beginPacket(Udp.remoteIP(), destPort);
   msgOUT.send(Udp); // send the bytes
@@ -85,7 +64,8 @@ void funcAuto(OSCMessage &msg, int addrOffset ){
   Serial.print("Auto: ");
   Serial.println(autoDim);
 
-  if(autoDim == 1){
+  //resend dimming value to iPlayer
+  if(autoDim == 1){  
     Brightness = 100-dim;
     //delay (10);
     String stringOne, stringTwo, iPlayerCommand;
@@ -103,6 +83,7 @@ void funcAuto(OSCMessage &msg, int addrOffset ){
   updateOSC();
 }
 
+// update TouchOSC brightness controls
 void updateOSC(){
       OSCMessage msgOUT("/Brightness");
       msgOUT.add(Brightness);

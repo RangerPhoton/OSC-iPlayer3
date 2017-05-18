@@ -5,6 +5,9 @@
  response.  Multiple bytes of data may be available.
  */
 
+// NOTE: commented out serial receive code since it's mostly getting garbage - 
+//       "Nice-to-have" feature: update the TouchOSC trigger buttons correctly
+
 //String inputString = "";         // a string to hold incoming data
 //boolean stringComplete = false;  // whether the string is complete
  
@@ -29,24 +32,24 @@
 //       For larger/longer values, change "unsigned int" to "long" in both places.
 // https://github.com/benrugg/Arduino-Hex-Decimal-Conversion/blob/master/hex_dec.ino
 
-unsigned int hexToDec(String hexString) {
-  
-  unsigned int decValue = 0;
-  int nextInt;
-  
-  for (int i = 0; i < hexString.length(); i++) {
-    
-    nextInt = int(hexString.charAt(i));
-    if (nextInt >= 48 && nextInt <= 57) nextInt = map(nextInt, 48, 57, 0, 9);
-    if (nextInt >= 65 && nextInt <= 70) nextInt = map(nextInt, 65, 70, 10, 15);
-    if (nextInt >= 97 && nextInt <= 102) nextInt = map(nextInt, 97, 102, 10, 15);
-    nextInt = constrain(nextInt, 0, 15);
-    
-    decValue = (decValue * 16) + nextInt;
-  }
-  
-  return decValue;
-}
+//unsigned int hexToDec(String hexString) {
+//  
+//  unsigned int decValue = 0;
+//  int nextInt;
+//  
+//  for (int i = 0; i < hexString.length(); i++) {
+//    
+//    nextInt = int(hexString.charAt(i));
+//    if (nextInt >= 48 && nextInt <= 57) nextInt = map(nextInt, 48, 57, 0, 9);
+//    if (nextInt >= 65 && nextInt <= 70) nextInt = map(nextInt, 65, 70, 10, 15);
+//    if (nextInt >= 97 && nextInt <= 102) nextInt = map(nextInt, 97, 102, 10, 15);
+//    nextInt = constrain(nextInt, 0, 15);
+//    
+//    decValue = (decValue * 16) + nextInt;
+//  }
+//  
+//  return decValue;
+//}
 
 
 // Converting from Decimal to Hex:
@@ -65,53 +68,53 @@ String decToHex(byte decValue, byte desiredStringLength) {
 
 
  // ****** UTF8-Decoder: convert UTF8-string to extended ASCII *******
-static byte c1;  // Last character buffer
+//static byte c1;  // Last character buffer
 
 // Convert a single Character from UTF8 to Extended ASCII
 // Return "0" if a byte has to be ignored
-byte utf8ascii(byte ascii) {
-    if ( ascii<128 )   // Standard ASCII-set 0..0x7F handling  
-    {   c1=0; 
-        return( ascii ); 
-    }
-
-    // get previous input
-    byte last = c1;   // get last char
-    c1=ascii;         // remember actual character
-
-    switch (last)     // conversion depending on first UTF8-character
-    {   case 0xC2: return  (ascii);  break;
-        case 0xC3: return  (ascii | 0xC0);  break;
-        case 0x82: if(ascii==0xAC) return(0x80);       // special case Euro-symbol
-    }
-
-    return  (0);                                     // otherwise: return zero, if character has to be ignored
-}
+//byte utf8ascii(byte ascii) {
+//    if ( ascii<128 )   // Standard ASCII-set 0..0x7F handling  
+//    {   c1=0; 
+//        return( ascii ); 
+//    }
+//
+//    // get previous input
+//    byte last = c1;   // get last char
+//    c1=ascii;         // remember actual character
+//
+//    switch (last)     // conversion depending on first UTF8-character
+//    {   case 0xC2: return  (ascii);  break;
+//        case 0xC3: return  (ascii | 0xC0);  break;
+//        case 0x82: if(ascii==0xAC) return(0x80);       // special case Euro-symbol
+//    }
+//
+//    return  (0);                                     // otherwise: return zero, if character has to be ignored
+//}
 
 
 // convert String object from UTF8 String to Extended ASCII
-String utf8ascii(String s)
-{  
-  String r="";
-  char c;
-  for (int i=0; i<s.length(); i++)
-  {
-    c = utf8ascii(s.charAt(i));
-    if (c!=0) r+=c;
-  }
-  return r;
-}
+//String utf8ascii(String s)
+//{  
+//  String r="";
+//  char c;
+//  for (int i=0; i<s.length(); i++)
+//  {
+//    c = utf8ascii(s.charAt(i));
+//    if (c!=0) r+=c;
+//  }
+//  return r;
+//}
 
 // In Place conversion UTF8-string to Extended ASCII (ASCII is shorter!)
-void utf8ascii(char* s)
-{ 
-  int k=0;
-  char c;
-  for (int i=0; i<strlen(s); i++)
-  {
-    c = utf8ascii(s[i]);
-    if (c!=0) 
-      s[k++]=c;
-  }
-  s[k]=0;
-}
+//void utf8ascii(char* s)
+//{ 
+//  int k=0;
+//  char c;
+//  for (int i=0; i<strlen(s); i++)
+//  {
+//    c = utf8ascii(s[i]);
+//    if (c!=0) 
+//      s[k++]=c;
+//  }
+//  s[k]=0;
+//}
